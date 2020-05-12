@@ -1,4 +1,0 @@
---patch-module
-neuristic.core=_
---add-reads
-neuristic.core=ALL-UNNAMED
