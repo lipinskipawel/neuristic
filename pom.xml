@@ -15,6 +15,7 @@
     <modules>
         <module>neuristic-core</module>
         <module>neuristic-benchmark</module>
+        <module>neuristic-example</module>
     </modules>
 
 </project>

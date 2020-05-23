@@ -3,9 +3,6 @@
 ## How to run benchmark
 Execute following commands
 ```bash
-cd engine-benchmar
-```
-```bash
 mvn clean package
 ```
 ```bash

@@ -1,166 +1,17 @@
-package com.github.lipinskipawel.neuristic;
+package com.github.lipinskipawel.game;
 
-import com.github.lipinskipawel.board.ai.BoardEvaluator;
-import com.github.lipinskipawel.board.ai.MoveStrategy;
-import com.github.lipinskipawel.board.ai.bruteforce.MiniMaxAlphaBeta;
-import com.github.lipinskipawel.neuristic.activation.Relu;
-import com.github.lipinskipawel.neuristic.activation.Sigmoid;
-import com.github.lipinskipawel.neuristic.lossfunction.MSE;
 import com.github.lipinskipawel.board.engine.BoardInterface;
 import com.github.lipinskipawel.board.engine.Direction;
 import com.github.lipinskipawel.board.engine.Move;
 import com.github.lipinskipawel.board.engine.Player;
 import com.github.lipinskipawel.board.engine.Point;
 import com.github.lipinskipawel.board.engine.exception.ChangePlayerIsNotAllowed;
-import org.assertj.core.api.Assertions;
-import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.stream.Stream;
-
-@DisplayName("Internal -- TicTacToe")
-class TicTacToeTest {
-
-    private static final int NUMBER_OF_GAMES = 100;
-
-    @Test
-    void agentTraining() {
-        final WinnerKeeper state = new WinnerKeeper();
-        for (int i = 0; i < NUMBER_OF_GAMES; i++) {
-            var game = TicTacToe.createGame();
-
-            final var ticTacToeBruteForce = new MiniMaxAlphaBeta(new TicTacToeEvaluator());
-            final var agentStrategy = new NeuralNetworkPolicy(game);
-
-            MoveStrategy currentStrategy = ticTacToeBruteForce;
-
-            do {
-                final var move = currentStrategy.execute(game, 9);
-//                System.out.println("Best move for player " + game.getPlayer() + " is: " + move.getMove());
-                game = game.executeMove(move);
-                currentStrategy = game.getPlayer() == Player.FIRST ? ticTacToeBruteForce : agentStrategy;
-            } while (!game.isGameOver());
-
-            game
-                    .takeTheWinner()
-                    .ifPresentOrElse(player -> {
-//                                System.out.println("The winner is: " + player);
-                                state.takeWinner(player);
-                                if (player == Player.FIRST) {
-                                    state.didSecondWinTheGame = false;
-                                    agentStrategy.learn(true);
-                                } else {
-                                    agentStrategy.learn(false);
-                                }
-                            },
-                            () -> {
-                                System.out.println("No winner");
-                                state.tie++;
-                                state.didSecondWinTheGame = false;
-                            });
-            if (state.didSecondWinTheGame) {
-                System.out.println(new TicTacToeEvaluator().evaluate(game));
-                System.out.println(game);
-                Assertions.fail("SECOND won the game");
-            }
-        }
-        System.out.println("First: " + state.firstWon);
-        System.out.println("Second: " + state.secondWon);
-        System.out.println("Tie: " + state.tie);
-    }
-}
-
-final class WinnerKeeper {
-    boolean didSecondWinTheGame = true;
-    int firstWon = 0;
-    int secondWon = 0;
-    int tie = 0;
-
-    void takeWinner(final Player player) {
-        if (player == Player.FIRST) {
-            firstWon++;
-        } else {
-            secondWon++;
-        }
-    }
-}
-
-final class NeuralNetworkPolicy implements MoveStrategy, BoardEvaluator {
-
-    private final NeuralNetwork agent;
-    private final List<Double> historyOfMovePredictions;
-
-    NeuralNetworkPolicy(final BoardInterface game) {
-        this.agent = new DeepNeuralNetwork.Builder()
-                .addLayer(new Layer(game.nonBinaryTransformation().length, new Relu()))
-                .addLayer(new Layer(5, new Relu()))
-                .addLayer(new Layer(1, new Sigmoid()))
-                .compile()
-                .lossFunction(new MSE())
-                .build();
-        this.historyOfMovePredictions = new ArrayList<>();
-    }
-
-    @Override
-    public Move execute(final BoardInterface board, final int depth) {
-        return execute(board, depth, this);
-    }
-
-    @Override
-    public Move execute(final BoardInterface board, final int depth, final BoardEvaluator evaluator) {
-        var bestMove = new Move(Lists.emptyList());
-        var bestPrediction = Double.MIN_VALUE;
-        final var moves = board.allLegalMoves();
-        for (var move : moves) {
-            final var afterMove = board.executeMove(move);
-            final var predicted = evaluate(afterMove);
-            if (predicted > bestPrediction) {
-                bestPrediction = predicted;
-                bestMove = move;
-            }
-        }
-        this.historyOfMovePredictions.add(bestPrediction);
-        return bestMove;
-    }
-
-    void learn(final boolean didIWonTheGame) {
-
-    }
-
-    @Override
-    public double evaluate(final BoardInterface board) {
-        return this.agent.predict(board.nonBinaryTransformation()).getBestValue().doubleValue();
-    }
-}
-
-
-final class NeuralNetworkEvaluator implements BoardEvaluator {
-
-    private final NeuralNetwork agent;
-
-    NeuralNetworkEvaluator(final BoardInterface game) {
-        this.agent = new DeepNeuralNetwork.Builder()
-                .addLayer(new Layer(game.nonBinaryTransformation().length, new Relu()))
-                .addLayer(new Layer(5, new Relu()))
-                .addLayer(new Layer(1, new Sigmoid()))
-                .compile()
-                .lossFunction(new MSE())
-                .build();
-    }
-
-    @Override
-    public double evaluate(final BoardInterface board) {
-        final var predict = this.agent.predict(board.nonBinaryTransformation()).getBestValue().doubleValue();
-//        System.out.println("NN predicted: " + predict);
-        return predict;
-    }
-}
 
 final class TicTacToe implements BoardInterface {
 
@@ -450,17 +301,5 @@ final class TicTacToe implements BoardInterface {
         return Stream.of(this.board)
                 .flatMapToDouble(Arrays::stream)
                 .toArray();
-    }
-}
-
-final class TicTacToeEvaluator implements BoardEvaluator {
-
-    @Override
-    public double evaluate(final BoardInterface board) {
-        if (board instanceof TicTacToe && board.isGameOver()) {
-            final TicTacToe game = (TicTacToe) board;
-            return game.isFirstPlayerWon() ? new Random().nextDouble() : new Random().nextDouble() - 2.0;
-        }
-        return new Random().nextDouble();
     }
 }
