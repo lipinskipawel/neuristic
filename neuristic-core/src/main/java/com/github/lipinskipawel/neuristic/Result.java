@@ -11,7 +11,7 @@ import static java.util.stream.Collectors.toList;
  *
  * @param <T>
  */
-final class Result<T extends Number & Comparable> {
+public final class Result<T extends Number & Comparable> {
 
     private List<T> list;
 

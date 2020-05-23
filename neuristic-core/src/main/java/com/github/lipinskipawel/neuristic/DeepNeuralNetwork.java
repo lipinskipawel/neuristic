@@ -10,7 +10,7 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-final class DeepNeuralNetwork {
+public final class DeepNeuralNetwork {
 
     private final List<Layer> layers;
     private Result result;
@@ -46,12 +46,12 @@ final class DeepNeuralNetwork {
         return this;
     }
 
-    DeepNeuralNetwork lossFunction(final LossFunction lossFunction) {
+    public DeepNeuralNetwork lossFunction(final LossFunction lossFunction) {
         this.lossFunction = lossFunction;
         return this;
     }
 
-    NeuralNetwork build() {
+    public NeuralNetwork build() {
         if (this.lossFunction == null)
             throw new RuntimeException("Loss function is not defined");
         this.networkDetails = new NetworkDetails(layers);

@@ -8,7 +8,7 @@ public final class Layer {
     private final int numberOfNodes;
     private final ActivationFunction activationFunction;
 
-    Layer(final int numberOfNodes,
+    public Layer(final int numberOfNodes,
           final ActivationFunction activationFunction) {
         this.numberOfNodes = numberOfNodes;
         this.activationFunction = activationFunction;

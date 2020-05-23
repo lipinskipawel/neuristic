@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
  * This is high level interface. Define basic operations
  * that can be performed on neural network.
  */
-interface NeuralNetwork {
+public interface NeuralNetwork {
 
     Result predict(final Matrix data);
 
