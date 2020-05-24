@@ -45,7 +45,6 @@ class NeuralNetworkTest {
                     .addLayer(new Layer(1, new Tanh()))
                     .compile()
                     .lossFunction(new MSE())
-                    .noBatching()
                     .build();
 
             for (int i = 0; i < 30_000; i++) {
@@ -80,7 +79,6 @@ class NeuralNetworkTest {
             final var model = new DeepNeuralNetwork.Builder()
                     .addLayer(new Layer(1, new Linear()))
                     .compile()
-                    .noBatching()
                     .lossFunction(new MSE())
                     .build();
 
