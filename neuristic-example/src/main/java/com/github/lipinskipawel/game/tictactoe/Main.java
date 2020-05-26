@@ -1,20 +1,20 @@
-package com.github.lipinskipawel.game;
+package com.github.lipinskipawel.game.tictactoe;
 
 import com.github.lipinskipawel.board.ai.MoveStrategy;
 import com.github.lipinskipawel.board.ai.bruteforce.MiniMaxAlphaBeta;
 import com.github.lipinskipawel.board.engine.Player;
 
-public class MainTicTacToe {
+public class Main {
 
     private static final int NUMBER_OF_GAMES = 100;
 
     public static void main(String[] args) {
-        final TicTacToeWinnerKeeper state = new TicTacToeWinnerKeeper();
+        final WinnerKeeper state = new WinnerKeeper();
         for (int i = 0; i < NUMBER_OF_GAMES; i++) {
             var game = TicTacToe.createGame();
 
-            final var ticTacToeBruteForce = new MiniMaxAlphaBeta(new TicTacToeEvaluator());
-            final var agentStrategy = new TicTacToeAgent(game);
+            final var ticTacToeBruteForce = new MiniMaxAlphaBeta(new Evaluator());
+            final var agentStrategy = new Agent(game);
 
             MoveStrategy currentStrategy = ticTacToeBruteForce;
 
@@ -43,7 +43,7 @@ public class MainTicTacToe {
                                 state.didSecondWinTheGame = false;
                             });
             if (state.didSecondWinTheGame) {
-                System.out.println(new TicTacToeEvaluator().evaluate(game));
+                System.out.println(new Evaluator().evaluate(game));
                 System.out.println(game);
 //                Assertions.fail("SECOND won the game");
             }

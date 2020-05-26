@@ -1,11 +1,11 @@
-package com.github.lipinskipawel.game;
+package com.github.lipinskipawel.game.tictactoe;
 
 import com.github.lipinskipawel.board.ai.BoardEvaluator;
 import com.github.lipinskipawel.board.engine.BoardInterface;
 
 import java.util.Random;
 
-final class TicTacToeEvaluator implements BoardEvaluator {
+final class Evaluator implements BoardEvaluator {
 
     @Override
     public double evaluate(final BoardInterface board) {

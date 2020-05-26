@@ -1,4 +1,4 @@
-package com.github.lipinskipawel.game;
+package com.github.lipinskipawel.game.tictactoe;
 
 import com.github.lipinskipawel.board.ai.BoardEvaluator;
 import com.github.lipinskipawel.board.ai.MoveStrategy;
@@ -15,12 +15,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-final class TicTacToeAgent implements MoveStrategy, BoardEvaluator {
+final class Agent implements MoveStrategy, BoardEvaluator {
 
     private final NeuralNetwork agent;
     private final List<Double> historyOfMovePredictions;
 
-    TicTacToeAgent(final BoardInterface game) {
+    Agent(final BoardInterface game) {
         this.agent = new DeepNeuralNetwork.Builder()
                 .addLayer(new Layer(game.nonBinaryTransformation().length, new Relu()))
                 .addLayer(new Layer(5, new Relu()))

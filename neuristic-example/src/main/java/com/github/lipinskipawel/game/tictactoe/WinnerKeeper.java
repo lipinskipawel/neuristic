@@ -1,8 +1,8 @@
-package com.github.lipinskipawel.game;
+package com.github.lipinskipawel.game.tictactoe;
 
 import com.github.lipinskipawel.board.engine.Player;
 
-final class TicTacToeWinnerKeeper {
+final class WinnerKeeper {
     boolean didSecondWinTheGame = true;
     int firstWon = 0;
     int secondWon = 0;

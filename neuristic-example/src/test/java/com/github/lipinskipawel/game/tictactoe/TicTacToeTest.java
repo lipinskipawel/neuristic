@@ -1,4 +1,4 @@
-package com.github.lipinskipawel.game;
+package com.github.lipinskipawel.game.tictactoe;
 
 import com.github.lipinskipawel.board.engine.BoardInterface;
 import com.github.lipinskipawel.board.engine.Direction;
