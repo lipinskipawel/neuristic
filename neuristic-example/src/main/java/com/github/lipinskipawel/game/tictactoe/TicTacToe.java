@@ -39,6 +39,7 @@ final class TicTacToe implements BoardInterface {
         this.board = board;
         this.currentPlayer = currentPlayer;
         this.winner = 0.2;
+        isGameOver();
     }
 
     @Override

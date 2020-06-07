@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 
 public class Main {
 
-    private static final int NUMBER_OF_GAMES = 10_000;
+    private static final int NUMBER_OF_GAMES = 1_000;
     private static final int NUMBER_AFTER_SAVE = NUMBER_OF_GAMES / 10;
     private static int TIMES = 1;
 
@@ -61,7 +61,7 @@ public class Main {
                     try {
                         final var filename = "after-" + copy + "-game.txt";
                         Files.writeString(Paths.get(filename), stringModel);
-                        System.out.println("File has been saved");
+                        System.out.println("File " + filename + " has been saved.");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
