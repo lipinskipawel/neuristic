@@ -2,6 +2,7 @@ package com.github.lipinskipawel.neuristic;
 
 import com.github.lipinskipawel.neuristic.activation.Linear;
 import com.github.lipinskipawel.neuristic.activation.Relu;
+import com.github.lipinskipawel.neuristic.activation.Sigmoid;
 import com.github.lipinskipawel.neuristic.activation.Softmax;
 import com.github.lipinskipawel.neuristic.activation.Tanh;
 import com.github.lipinskipawel.neuristic.lossfunction.MSE;
@@ -136,7 +137,7 @@ class NeuralNetworkTest {
 
         @Test
         @DisplayName("fromModelToString - one layer")
-        void fromModelToStringThenFromStringToModel1() {
+        void fromModelToStringThenFromStringToModel1Layer() {
             final NeuralNetwork model = new DeepNeuralNetwork.Builder()
                     .addLayer(new Layer(1, new Relu()))
                     .compile()
@@ -158,7 +159,7 @@ class NeuralNetworkTest {
 
         @Test
         @DisplayName("fromModelToString -> fromStringToModel - two layers")
-        void fromModelToStringThenFromStringToModel() {
+        void fromModelToStringThenFromStringToModel2Layers() {
             final NeuralNetwork model = new DeepNeuralNetwork.Builder()
                     .addLayer(new Layer(2, new Relu()))
                     .addLayer(new Layer(3, new Softmax()))
@@ -169,8 +170,31 @@ class NeuralNetworkTest {
             final var transformed = model.transform(NeuralNetwork.fromModelToString());
             final var backToModel = NeuralNetwork.fromStringToModel(transformed);
 
-            Assertions.assertThat(model).usingRecursiveComparison()
+            Assertions.assertThat(model)
+                    .usingRecursiveComparison()
                     .usingDefaultComparator()
+                    .withStrictTypeChecking()
+                    .isEqualTo(backToModel);
+        }
+
+        @Test
+        @DisplayName("fromModelToString -> fromStringToModel - three layers")
+        void fromModelToStringThenFromStringToModel3Layers() {
+            final NeuralNetwork model = new DeepNeuralNetwork.Builder()
+                    .addLayer(new Layer(9, new Relu()))
+                    .addLayer(new Layer(5, new Relu()))
+                    .addLayer(new Layer(1, new Sigmoid()))
+                    .compile()
+                    .lossFunction(new MSE())
+                    .build();
+
+            final var transformed = model.transform(NeuralNetwork.fromModelToString());
+            final var backToModel = NeuralNetwork.fromStringToModel(transformed);
+
+            Assertions.assertThat(model)
+                    .usingRecursiveComparison()
+                    .usingDefaultComparator()
+                    .withStrictTypeChecking()
                     .isEqualTo(backToModel);
         }
     }

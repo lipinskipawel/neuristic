@@ -76,7 +76,10 @@ public final class LayerDTO {
         }
 
         if (findAll.size() == 1) {
-            return Matrix.of(toDoubleArray(findAll.get(0)));
+            final var firstRow = toDoubleArray(findAll.get(0));
+            final var resultData = new double[1][];
+            resultData[0] = firstRow;
+            return Matrix.of(resultData);
         }
         return Matrix.of(toDoubleDoubleArray(findAll));
     }

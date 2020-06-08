@@ -1,7 +1,6 @@
 package com.github.lipinskipawel.neuristic;
 
 import com.github.lipinskipawel.neuristic.activation.Sigmoid;
-import com.github.lipinskipawel.neuristic.activation.Tanh;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -47,11 +46,11 @@ class LayerDTOTest {
         @Test
         @DisplayName("parse 1d arrays")
         void shouldParseStringFrom1dArray() {
-            final var preparedWeight = Matrix.of(new double[]{0.8, -1.2});
-            final var preparedBiases = Matrix.of(new double[]{1, 1});
-            final var layerDTO = LayerDTO
-                    .parseStringDoubleWeightDoubleBiasClassActivationFunction("[[0.8, -1.2]]:" +
-                            "[[1, 1]]:" + Tanh.class.getCanonicalName());
+            final var preparedWeight = Matrix.of(new double[][]{{0.6775818874783545, 0.39148446642093626, 0.5835065076748652, 0.2719096671665818, -0.32859816820175425}});
+            final var preparedBiases = Matrix.of(new double[][]{{0.08625705839435478}});
+            final var layerDTO = LayerDTO.parseStringDoubleWeightDoubleBiasClassActivationFunction(
+                    "[[0.6775818874783545, 0.39148446642093626, 0.5835065076748652, 0.2719096671665818, -0.32859816820175425]]:" +
+                            "[[0.08625705839435478]]:" + Sigmoid.class.getCanonicalName());
 
             final var weight = layerDTO.getWeight();
             final var biases = layerDTO.getBiases();
@@ -60,7 +59,7 @@ class LayerDTOTest {
             assertAll(
                     () -> Assertions.assertThat(weight).usingRecursiveComparison().isEqualTo(preparedWeight),
                     () -> Assertions.assertThat(biases).usingRecursiveComparison().isEqualTo(preparedBiases),
-                    () -> Assertions.assertThat(activationFunction).isInstanceOf(Tanh.class)
+                    () -> Assertions.assertThat(activationFunction).isInstanceOf(Sigmoid.class)
             );
         }
 
